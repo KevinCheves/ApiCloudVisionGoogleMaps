@@ -64,6 +64,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         rbinfo = (RadioButton) findViewById(R.id.rbInfo);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Snackbar.make(findViewById(R.id.frmlayout), "Mantener precionado para agregar marcador", Snackbar.LENGTH_SHORT).show();
+
     }
 
     @Override
