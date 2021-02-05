@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frmlayout">
+
+    <FrameLayout
+        android:id="@+id/content_frame2"
+        android:layout_width="match_parent"
+        android:layout_height="136dp"
+        android:background="#F1FBFB">
+
+        <TextView
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="125dp"
+            android:layout_marginTop="5dp"
+            android:text="GoogleMaps"
+            android:textColor="#576973"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnIr"
+            android:layout_width="45dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="270dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="#576973"
+            android:onClick="clickir"
+            android:text="Ir"
+            android:textColor="#FBF7F1"
+            android:textSize="11dp"/>
+
+        <Button
+            android:id="@+id/btnAnimar"
+            android:layout_width="85dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="320dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="#576973"
+            android:onClick="clickAnim"
+            android:text="Animar"
+            android:textColor="#FBF7F1"
+            android:textSize="11dp"/>
+
+        <EditText
+            android:id="@+id/txtLat"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="33dp"
+            android:hint="Latitud"
+            android:inputType="numberDecimal|numberSigned"
+            android:textAlignment="viewStart"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/txtLong"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="140dp"
+            android:layout_marginTop="33dp"
+            android:hint="Longitud"
+            android:inputType="numberDecimal|numberSigned"
+            android:textAlignment="viewStart"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="90dp"
+            android:text="Uso de Click:"
+            android:textColor="#576973"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="125dp"
+            android:layout_marginTop="80dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbPoly"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Poligono"
+                android:textColor="#576973"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rbLineas"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:text="Lineas"
+                android:textColor="#576973"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rbInfo"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:checked="true"
+                android:text="Info"
+                android:textColor="#576973"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+        </RadioGroup>
+    </FrameLayout>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_marginTop="130dp"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context=".MainActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+
+        />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menuVistas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="130dp"
+        app:menu_colorNormal="#ffffff"
+        app:menu_colorPressed="#576973"
+        app:menu_icon="@drawable/layers1">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_carreteras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iconcarretera"
+            app:fab_label="Vista de carreteras"
+            android:onClick="clickmapcarreteras"
+            app:fab_colorNormal="#ffffff"
+            app:fab_colorPressed="#576973" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_satelite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iconsatelite"
+            app:fab_label="Vista de satélite"
+            android:onClick="clickmapsatelite"
+            app:fab_colorNormal="#ffffff"
+            app:fab_colorPressed="#576973"/>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_hibrido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iconhybrid"
+            app:fab_label="Vista satélite/carreteras"
+            android:onClick="clickmaphibrido"
+            app:fab_colorNormal="#ffffff"
+            app:fab_colorPressed="#576973"/>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_topo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icontop"
+            app:fab_label="Vista topográfica"
+            android:onClick="clickmapatopografico"
+            app:fab_colorNormal="#ffffff"
+            app:fab_colorPressed="#576973"/>
+
+    </com.github.clans.fab.FloatingActionMenu>
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menuZOOM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="60dp"
+        app:menu_colorNormal="#ffffff"
+        app:menu_colorPressed="#576973"
+        app:menu_icon="@drawable/zoom">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_zoommas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/zoommas"
+            app:fab_label="Aumentar Zoom"
+            android:onClick="clickzoommas"
+            app:fab_colorNormal="#ffffff"
+            app:fab_colorPressed="#576973"/>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_zoommenos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/zoommenos"
+            app:fab_label="Disminuir Zoom"
+            android:onClick="clickzoommenos"
+            app:fab_colorNormal="#ffffff"
+            app:fab_colorPressed="#576973"/>
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+
+</RelativeLayout>
