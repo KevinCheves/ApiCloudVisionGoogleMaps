@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appmovil.tareagooglemaps.WebService.Asynchtask;
+import com.appmovil.tareagooglemaps.WebService.WebService;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,10 +39,17 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener,
-        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener{
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
     FloatingActionMenu menuVistas, menuZoom;
     SupportMapFragment mapFragment;
     GoogleMap map;
@@ -57,14 +66,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         menuVistas = (FloatingActionMenu) findViewById(R.id.menuVistas);
         menuZoom = (FloatingActionMenu) findViewById(R.id.menuZOOM);
-        lati = (EditText) findViewById(R.id.txtLat);
-        longi = (EditText) findViewById(R.id.txtLong);
-        rblineas = (RadioButton) findViewById(R.id.rbLineas);
-        rbpoly = (RadioButton) findViewById(R.id.rbPoly);
-        rbinfo = (RadioButton) findViewById(R.id.rbInfo);
+
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         Snackbar.make(findViewById(R.id.frmlayout), "Mantener precionado para agregar marcador", Snackbar.LENGTH_SHORT).show();
+
 
     }
 

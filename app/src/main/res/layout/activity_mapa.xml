@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/frmlayout">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frmlayout"
+    tools:context=".MapaActivity">
 
     <FrameLayout
         android:id="@+id/content_frame2"
@@ -92,7 +94,7 @@
             android:layout_height="90dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:layout_marginLeft="250dp"/>
+            android:layout_marginLeft="220dp"/>
     </FrameLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
