@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.appmovil.tareagooglemaps.MainActivity;
+import com.appmovil.tareagooglemaps.MapaActivity;
 import com.appmovil.tareagooglemaps.WebService.HttpRequest.HttpRequestException;
 
 import org.json.JSONException;
@@ -51,7 +52,7 @@ public class WebService extends AsyncTask<String, Long, String> {
         this.actividad=activity;
         this.callback=callback;
     }
-    public WebService(String s, Map<String, String> datos, MainActivity mainActivity, MainActivity activity) {
+    public WebService(String s, Map<String, String> datos, MapaActivity mainActivity, MainActivity activity) {
         // TODO Auto-generated constructor stub
     }
 

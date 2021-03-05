@@ -1,218 +1,184 @@
 package com.appmovil.tareagooglemaps;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelStore;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Point;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.Gravity;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.provider.MediaStore;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.PopupMenu;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.appmovil.tareagooglemaps.WebService.Asynchtask;
 import com.appmovil.tareagooglemaps.WebService.WebService;
-import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.vision.v1.Vision;
+import com.google.api.services.vision.v1.VisionRequestInitializer;
+import com.google.api.services.vision.v1.model.AnnotateImageRequest;
+import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
+import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
+import com.google.api.services.vision.v1.model.Feature;
+import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.TextAnnotation;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener,
-        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
-    FloatingActionMenu menuVistas, menuZoom;
-    SupportMapFragment mapFragment;
-    GoogleMap map;
-    EditText lati, longi;
-    RadioButton rblineas, rbpoly, rbinfo;
-    int ban = 1, ban2 = 1;
-    PolylineOptions lineas;
-    PolygonOptions poly;
+public class MainActivity extends AppCompatActivity implements  Asynchtask{
 
+    public Vision ApiVision;
+    private static final int PICK_IMAGE = 100;
+    Uri imageUri;
+    ImageView imagentexto;
+    String imageDetail;
+    Intent intent;
+    Bundle b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_principal);
 
-        menuVistas = (FloatingActionMenu) findViewById(R.id.menuVistas);
-        menuZoom = (FloatingActionMenu) findViewById(R.id.menuZOOM);
-
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        Snackbar.make(findViewById(R.id.frmlayout), "Mantener precionado para agregar marcador", Snackbar.LENGTH_SHORT).show();
-
-
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        map.setOnMarkerDragListener(this);
-        map.setOnMapLongClickListener(this);
-        map.setOnMapClickListener(this);
-
-    }
-
-    @Override
-    public void onMarkerDragStart(Marker marker) {
-
-    }
-
-    @Override
-    public void onMarkerDrag(Marker marker) {
-        marker.hideInfoWindow();
-        marker.showInfoWindow();
-        marker.setTitle("Lat: " + marker.getPosition().latitude + " Lng: " + marker.getPosition().longitude);
-    }
-
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-        marker.hideInfoWindow();
-        marker.showInfoWindow();
-        marker.setTitle("Lat: " + marker.getPosition().latitude + " Lng: " + marker.getPosition().longitude);
-    }
-
-    @Override
-    public void onMapLongClick(LatLng point) {
-        LatLng punto = new LatLng(point.latitude, point.longitude);
-        map.addMarker(new MarkerOptions().position(punto).title("Lat: " + point.latitude + " " + "Lng: " + point.longitude).draggable(true));
-    }
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-        menuVistas.close(true);
-        menuZoom.close(true);
-        if (rblineas.isChecked()) {
-            ban2 = 1;
-            rbinfo.setEnabled(false);
-            rbpoly.setEnabled(false);
-            switch (ban) {
-                case 1:
-                    lineas = new PolylineOptions();
-                    lineas.add(new LatLng(latLng.latitude, latLng.longitude));
-                    lineas.width(8);
-                    lineas.color(Color.RED);
-                    map.addPolyline(lineas);
-                    ban = 2;
-                    break;
-                case 2:
-                    lineas.add(new LatLng(latLng.latitude, latLng.longitude));
-                    map.addPolyline(lineas);
-                    ban = 1;
-                    rbinfo.setEnabled(true);
-                    rbpoly.setEnabled(true);
-                    break;
-                default:
-                    ban = 1;
-                    break;
+        intent = new Intent(MainActivity.this, MapaActivity.class);
+        b = new Bundle();
+        Vision.Builder visionBuilder = new Vision.Builder(new NetHttpTransport(),
+                new AndroidJsonFactory(), null);
+        visionBuilder.setVisionRequestInitializer(new VisionRequestInitializer("AIzaSyB5MkIB5lNnQH1kC1tZ3ATeEsv7z66moKs"));
+        ApiVision = visionBuilder.build();
+        imagentexto = (ImageView) findViewById(R.id.imagentexto);
+        Button btnleer = (Button)findViewById(R.id.btnprocesar);
+        Button btnselecc = (Button)findViewById(R.id.seleccionarimg);
+        btnselecc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
             }
-        }
-        if (rbpoly.isChecked()) {
-            rbinfo.setEnabled(false);
-            rblineas.setEnabled(false);
-            switch (ban2) {
-                case 1:
-                    poly = new PolygonOptions();
-                    poly.add(new LatLng(latLng.latitude, latLng.longitude));
-                    poly.fillColor(Color.BLUE);
-                    poly.strokeColor(Color.RED);
-                    map.addPolygon(poly);
-                    ban2 = 2;
-                    break;
-                default:
-                    poly.add(new LatLng(latLng.latitude, latLng.longitude));
-                    map.addPolygon(poly);
-                    rbinfo.setEnabled(true);
-                    rblineas.setEnabled(true);
-                    ban2++;
-                    break;
+        });
+        btnleer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProcesarTexto();
             }
+        });
+    }
+    private void openGallery() {
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE) {
+            imageUri = data.getData();
+            imagentexto.setImageURI(imageUri);
         }
-        if (rbinfo.isChecked()) {
-            ban2 = 1;
-            Projection proj = map.getProjection();
-            Point coord = proj.toScreenLocation(latLng);
-            Snackbar.make(findViewById(R.id.frmlayout), "Lat: " + latLng.latitude + " Lng: " + latLng.longitude + "\n X: " + coord.x + " Y: " + coord.y, Snackbar.LENGTH_SHORT).show();
+    }
+    public Image getImageToProcess(){
+        ImageView imagen = (ImageView)findViewById(R.id.imagentexto);
+        BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        bitmap = scaleBitmapDown(bitmap, 1200);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byte[] imageInByte = stream.toByteArray();
+        Image inputImage = new Image();
+        inputImage.encodeContent(imageInByte);
+        return inputImage;
+    }
+
+    public BatchAnnotateImagesRequest setBatchRequest(String TipoSolic, Image inputImage){
+        Feature desiredFeature = new Feature();
+        desiredFeature.setType(TipoSolic);
+        AnnotateImageRequest request = new AnnotateImageRequest();
+        request.setImage(inputImage);
+        request.setFeatures(Arrays.asList(desiredFeature));
+        BatchAnnotateImagesRequest batchRequest =  new BatchAnnotateImagesRequest();
+        batchRequest.setRequests(Arrays.asList(request));
+        return batchRequest;
+    }
+
+    public void ProcesarTexto(){
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    BatchAnnotateImagesRequest batchRequest = setBatchRequest("TEXT_DETECTION", getImageToProcess());
+                    try {
+                        Vision.Images.Annotate annotateRequest = ApiVision.images().annotate(batchRequest);
+                        annotateRequest.setDisableGZipContent(true);
+                        BatchAnnotateImagesResponse response = annotateRequest.execute();
+
+                        final TextAnnotation text = response.getResponses().get(0).getFullTextAnnotation();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageDetail = text.getText();
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        Map<String, String> datos = new HashMap<String, String>();
+        WebService ws= new WebService("http://www.geognos.com/api/en/countries/info/all.json",
+                datos, this, this);
+        ws.execute("GET");
+        }
+        private Bitmap scaleBitmapDown(Bitmap bitmap, int maxDimension) {
+        int originalWidth = bitmap.getWidth();
+        int originalHeight = bitmap.getHeight();
+        int resizedWidth = maxDimension;
+        int resizedHeight = maxDimension;
+        if (originalHeight > originalWidth) {
+            resizedHeight = maxDimension;
+            resizedWidth = (int) (resizedHeight * (float) originalWidth / (float) originalHeight);
+        } else if (originalWidth > originalHeight) {
+            resizedWidth = maxDimension;
+            resizedHeight = (int) (resizedWidth * (float) originalHeight / (float) originalWidth);
+        } else if (originalHeight == originalWidth) {
+            resizedHeight = maxDimension;
+            resizedWidth = maxDimension;
+        }
+        return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
+    }
+
+    @Override
+    public void processFinish(String result) throws JSONException {
+        try {
+            String atributo = "";
+            JSONObject JSONpais = new JSONObject(result);
+            JSONObject results = JSONpais.getJSONObject("Results");
+            JSONArray nombrespaises=results.names();
+            for (int i = 0; i < nombrespaises.length(); i++) {
+                String paises= nombrespaises.getString(i);
+                JSONObject JSONPaises=results.getJSONObject(paises);
+                String nombrePais=JSONPaises.getString("Name").toLowerCase();
+                JSONObject countryCodes=JSONPaises.getJSONObject("CountryCodes");
+                String iso2=countryCodes.getString("iso2");
+                String pais = imageDetail.toLowerCase().replace("\n","");
+                if (nombrePais.equals(pais)) {
+                    b.putString("iso", iso2);
+                    intent.putExtras(b);
+                    startActivity(intent);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
         }
     }
-    public void clickmapcarreteras(View view) {
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.getUiSettings().setZoomControlsEnabled(true);
-    }
-
-    public void clickmapsatelite(View view) {
-        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        map.getUiSettings().setZoomControlsEnabled(true);
-    }
-
-    public void clickmaphibrido(View view) {
-        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        map.getUiSettings().setZoomControlsEnabled(true);
-    }
-
-    public void clickmapatopografico(View view) {
-        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-        map.getUiSettings().setZoomControlsEnabled(true);
-    }
-
-    public void clickzoommas(View view) {
-        map.animateCamera(CameraUpdateFactory.zoomIn());
-    }
-
-    public void clickzoommenos(View view) {
-        map.animateCamera(CameraUpdateFactory.zoomOut());
-    }
-
-    public void clickir(View view) {
-        Float latit = Float.parseFloat(lati.getText().toString());
-        Float longit = Float.parseFloat(longi.getText().toString());
-        float zo = (float) 13.1;
-        CameraUpdate camup1 = CameraUpdateFactory.newLatLngZoom(new LatLng(latit, longit), zo);
-        map.moveCamera(camup1);
-        map.addMarker(new MarkerOptions().position(new LatLng(latit, longit)).title("Lat: " + latit + " " + "Lng: " + longit).draggable(true));
-    }
-    public void clickAnim(View view) {
-        Float latit = Float.parseFloat(lati.getText().toString());
-        Float longit = Float.parseFloat(longi.getText().toString());
-        CameraPosition camPos = new CameraPosition.Builder()
-                .target(new LatLng(latit, longit))
-                .zoom(13)
-                .bearing(45)
-                .tilt(70)
-                .build();
-        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
-        map.animateCamera(camUpd3);
-
-    }
-
 }

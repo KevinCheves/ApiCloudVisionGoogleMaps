@@ -24,7 +24,7 @@
         <activity android:name=".MapaActivity">
 
         </activity>
-        <activity android:name=".PrincipalActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +36,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB5MkIB5lNnQH1kC1tZ3ATeEsv7z66moKs" />
 
-        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
